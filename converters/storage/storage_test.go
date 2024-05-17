@@ -7,9 +7,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/thalesfsp/dal/memory"
-	"github.com/thalesfsp/params/retrieve"
-
 	"github.com/thalesfsp/etler/v2/converter"
+	"github.com/thalesfsp/params/retrieve"
 )
 
 // Test struct.

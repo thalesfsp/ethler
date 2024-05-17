@@ -3,11 +3,10 @@ package task
 import (
 	"time"
 
+	"github.com/thalesfsp/etler/v2/internal/shared"
 	"github.com/thalesfsp/sypl"
 	"github.com/thalesfsp/sypl/level"
 	"github.com/thalesfsp/validation"
-
-	"github.com/thalesfsp/etler/v2/internal/shared"
 )
 
 //////
@@ -67,4 +66,16 @@ func New[ProcessingData, ConvertedData any](
 	}
 
 	return tsk, nil
+}
+
+// MustNew returns a new stage or panics.
+func MustNew[ProcessingData, ConvertedData any](
+	processingData []ProcessingData,
+) Task[ProcessingData, ConvertedData] {
+	tsk, err := New[ProcessingData, ConvertedData](processingData)
+	if err != nil {
+		panic(err)
+	}
+
+	return tsk
 }

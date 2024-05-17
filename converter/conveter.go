@@ -5,15 +5,14 @@ import (
 	"expvar"
 	"time"
 
-	"github.com/thalesfsp/status"
-	"github.com/thalesfsp/sypl"
-	"github.com/thalesfsp/sypl/level"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/internal/customapm"
 	"github.com/thalesfsp/etler/v2/internal/logging"
 	"github.com/thalesfsp/etler/v2/internal/metrics"
 	"github.com/thalesfsp/etler/v2/internal/shared"
+	"github.com/thalesfsp/status"
+	"github.com/thalesfsp/sypl"
+	"github.com/thalesfsp/sypl/level"
+	"github.com/thalesfsp/validation"
 )
 
 //////

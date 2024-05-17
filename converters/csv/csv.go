@@ -5,9 +5,8 @@ import (
 	"fmt"
 
 	"github.com/gocarina/gocsv"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/converter"
+	"github.com/thalesfsp/validation"
 )
 
 //////

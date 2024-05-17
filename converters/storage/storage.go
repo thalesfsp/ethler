@@ -5,11 +5,10 @@ import (
 	"fmt"
 
 	"github.com/thalesfsp/dal/storage"
-	"github.com/thalesfsp/params/create"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/converter"
 	"github.com/thalesfsp/etler/v2/internal/shared"
+	"github.com/thalesfsp/params/create"
+	"github.com/thalesfsp/validation"
 )
 
 //////

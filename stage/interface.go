@@ -30,5 +30,8 @@ type IStage[ProcessedData, ConvertedOut any] interface {
 	SetOnFinished(onFinished OnFinished[ProcessedData, ConvertedOut])
 
 	// Run the stage function.
-	Run(context.Context, task.Task[ProcessedData, ConvertedOut]) (task.Task[ProcessedData, ConvertedOut], error)
+	Run(
+		ctx context.Context,
+		task task.Task[ProcessedData, ConvertedOut],
+	) (task.Task[ProcessedData, ConvertedOut], error)
 }

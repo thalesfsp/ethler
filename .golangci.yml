@@ -17,6 +17,13 @@ linters:
     - gochecknoglobals
     - lll
     - interfacebloat
+    - testifylint
+    - depguard
+    - perfsprint
+    
+    # Disable these two for a more strict test.
+    - wsl
+    - revive
   fast: false
 
 # Settings for specific linters

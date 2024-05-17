@@ -7,11 +7,6 @@ import (
 	"time"
 
 	"github.com/thalesfsp/concurrentloop"
-	"github.com/thalesfsp/status"
-	"github.com/thalesfsp/sypl"
-	"github.com/thalesfsp/sypl/level"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/converter"
 	"github.com/thalesfsp/etler/v2/internal/customapm"
 	"github.com/thalesfsp/etler/v2/internal/logging"
@@ -19,6 +14,10 @@ import (
 	"github.com/thalesfsp/etler/v2/internal/shared"
 	"github.com/thalesfsp/etler/v2/processor"
 	"github.com/thalesfsp/etler/v2/task"
+	"github.com/thalesfsp/status"
+	"github.com/thalesfsp/sypl"
+	"github.com/thalesfsp/sypl/level"
+	"github.com/thalesfsp/validation"
 )
 
 //////
@@ -200,24 +199,38 @@ func (s *Stage[ProcessingData, ConvertedData]) Run(ctx context.Context, tsk task
 
 	// NOTE: It process the data sequentially.
 	for _, proc := range s.Processors {
-		// Re-use the output of the previous stage as the input of the
-		// next stage ensuring that the data is processed sequentially.
-		rFI, err := proc.Run(tracedContext, retroFeedIn)
-		if err != nil {
-			//////
-			// Observability: tracing, metrics, status, logging, etc.
-			//////
+		if proc.GetAsync() {
+			go func() {
+				// Re-use the output of the previous stage as the input of the
+				// next stage ensuring that the data is processed sequentially.
+				if _, err := proc.Run(tracedContext, retroFeedIn); err != nil {
+					//////
+					// Observability: tracing, metrics, status, logging, etc.
+					//////
 
-			s.GetStatus().Set(status.Failed.String())
+					s.GetStatus().Set(status.Failed.String())
+				}
+			}()
+		} else {
+			// Re-use the output of the previous stage as the input of the
+			// next stage ensuring that the data is processed sequentially.
+			rFI, err := proc.Run(tracedContext, retroFeedIn)
+			if err != nil {
+				//////
+				// Observability: tracing, metrics, status, logging, etc.
+				//////
 
-			// Returns whatever is tsk `out` and the error.
-			//
-			// Don't need tracing, it's already traced.
-			return task.Task[ProcessingData, ConvertedData]{}, err
+				s.GetStatus().Set(status.Failed.String())
+
+				// Returns whatever is tsk `out` and the error.
+				//
+				// Don't need tracing, it's already traced.
+				return task.Task[ProcessingData, ConvertedData]{}, err
+			}
+
+			// Update the input with the output.
+			retroFeedIn = rFI
 		}
-
-		// Update the input with the output.
-		retroFeedIn = rFI
 
 		//////
 		// Observability: tracing, metrics, status, logging, etc.

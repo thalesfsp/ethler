@@ -7,17 +7,16 @@ import (
 	"time"
 
 	"github.com/thalesfsp/concurrentloop"
-	"github.com/thalesfsp/status"
-	"github.com/thalesfsp/sypl"
-	"github.com/thalesfsp/sypl/level"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/internal/customapm"
 	"github.com/thalesfsp/etler/v2/internal/logging"
 	"github.com/thalesfsp/etler/v2/internal/metrics"
 	"github.com/thalesfsp/etler/v2/internal/shared"
 	"github.com/thalesfsp/etler/v2/stage"
 	"github.com/thalesfsp/etler/v2/task"
+	"github.com/thalesfsp/status"
+	"github.com/thalesfsp/sypl"
+	"github.com/thalesfsp/sypl/level"
+	"github.com/thalesfsp/validation"
 )
 
 //////
@@ -117,7 +116,6 @@ func (p *Pipeline[ProcessedData, ConvertedOut]) GetPaused() status.Status {
 // Pause sets the Paused status.
 func (p *Pipeline[ProcessedData, ConvertedOut]) SetPause(state bool) {
 	if state {
-
 		p.GetStatus().Set(status.Paused.String())
 
 		shared.SetPaused(1)

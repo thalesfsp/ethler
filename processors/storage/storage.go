@@ -6,11 +6,10 @@ import (
 
 	"github.com/thalesfsp/concurrentloop"
 	"github.com/thalesfsp/dal/storage"
-	"github.com/thalesfsp/params/create"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/internal/shared"
 	"github.com/thalesfsp/etler/v2/processor"
+	"github.com/thalesfsp/params/create"
+	"github.com/thalesfsp/validation"
 )
 
 //////

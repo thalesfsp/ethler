@@ -10,13 +10,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/thalesfsp/dal/memory"
-	"github.com/thalesfsp/params/list"
-	"github.com/thalesfsp/status"
-
 	"github.com/thalesfsp/etler/v2/converters/passthru"
 	"github.com/thalesfsp/etler/v2/processor"
 	"github.com/thalesfsp/etler/v2/processors/storage"
 	"github.com/thalesfsp/etler/v2/task"
+	"github.com/thalesfsp/params/list"
+	"github.com/thalesfsp/status"
 )
 
 func TestNew(t *testing.T) {
@@ -218,4 +217,60 @@ func ExampleNew_storage_processor() {
 	// Output:
 	// John appears 2 times
 	// Peter appears 2 times
+}
+
+// Create a test to test an async processor.
+func TestNew_async_processor(t *testing.T) {
+	// This will hold the result of the async processor.
+	ch := make(chan int)
+
+	// Async processor.
+	asyncProcessor, err := processor.New(
+		"async-processor",
+		"async processor",
+		func(ctx context.Context, processingData []int) ([]int, error) {
+			// Artificially add some delay.
+			time.Sleep(100 * time.Millisecond)
+
+			// Send the result to the channel.
+			ch <- 2
+
+			// Need to return anyway to satisfy the interface.
+			return processingData, nil
+		},
+		// Set the async option.
+		processor.WithAsync[int](true),
+	)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Define the stage.
+	stg1, err := New(
+		"stage-1",    // Stage name.
+		"main stage", // Stage description.
+
+		// Set the data converter.
+		passthru.Must[int](), // Pass-through, does nothing.
+
+		// Set processors. As many as needed can be added.
+		asyncProcessor,
+	)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// Run the stage which will run all its defined processors.
+	if _, err := stg1.Run(
+		context.Background(),
+		task.MustNew[int, int]([]int{1}),
+	); err != nil {
+		t.Fatal(err)
+	}
+
+	// Wait for the channel to be set.
+	resultOfTheAsyncProcessor := <-ch
+
+	// Validate the result.
+	assert.Equal(t, 2, resultOfTheAsyncProcessor)
 }

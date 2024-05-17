@@ -3,10 +3,9 @@ package pipeline
 import (
 	"context"
 
-	"github.com/thalesfsp/status"
-
 	"github.com/thalesfsp/etler/v2/internal/shared"
 	"github.com/thalesfsp/etler/v2/task"
+	"github.com/thalesfsp/status"
 )
 
 // IPipeline defines what a `Pipeline` must do.

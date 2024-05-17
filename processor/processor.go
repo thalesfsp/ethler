@@ -5,15 +5,14 @@ import (
 	"expvar"
 	"time"
 
-	"github.com/thalesfsp/status"
-	"github.com/thalesfsp/sypl"
-	"github.com/thalesfsp/sypl/level"
-	"github.com/thalesfsp/validation"
-
 	"github.com/thalesfsp/etler/v2/internal/customapm"
 	"github.com/thalesfsp/etler/v2/internal/logging"
 	"github.com/thalesfsp/etler/v2/internal/metrics"
 	"github.com/thalesfsp/etler/v2/internal/shared"
+	"github.com/thalesfsp/status"
+	"github.com/thalesfsp/sypl"
+	"github.com/thalesfsp/sypl/level"
+	"github.com/thalesfsp/validation"
 )
 
 //////
@@ -40,6 +39,11 @@ type Processor[ProcessingData any] struct {
 
 	// Description of the processor.
 	Description string `json:"description"`
+
+	// Async if set will run the processor in a go routine.
+	//
+	// WARN: The output of the processing will not be forwarded!
+	Async bool `default:"false" json:"async"`
 
 	// OnFinished is the function that is called when a processor finishes its
 	// execution.
@@ -144,6 +148,18 @@ func (p *Processor[ProcessingData]) GetMetrics() map[string]string {
 	}
 }
 
+// SetAsync if set will run the processor in a go routine.
+//
+// WARN: The output of the processing will not be forwarded!
+func (p *Processor[ProcessingData]) SetAsync(async bool) {
+	p.Async = async
+}
+
+// GetAsync returns if the processor is running in a go routine.
+func (p *Processor[ProcessingData]) GetAsync() bool {
+	return p.Async
+}
+
 // Run the transform function.
 func (p *Processor[ProcessingData]) Run(ctx context.Context, processingData []ProcessingData) ([]ProcessingData, error) {
 	//////
@@ -184,7 +200,6 @@ func (p *Processor[ProcessingData]) Run(ctx context.Context, processingData []Pr
 		p.GetLogger().Tracelnf("Processor %s is paused. Waiting to be resumed...", p.GetName())
 
 		select {
-
 		// If the context is done, do nothing, return.
 		case <-ctx.Done():
 			//////

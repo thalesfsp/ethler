@@ -11,10 +11,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/thalesfsp/customerror"
+	"github.com/thalesfsp/etler/v2/internal/customapm"
 	"github.com/thalesfsp/status"
 	"github.com/thalesfsp/sypl"
-
-	"github.com/thalesfsp/etler/v2/internal/customapm"
 )
 
 // GenerateIDBasedOnContent generates MD5 hash (content-based) for message ID. Good to be used
